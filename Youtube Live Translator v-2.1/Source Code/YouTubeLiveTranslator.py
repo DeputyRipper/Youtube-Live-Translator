@@ -143,6 +143,9 @@ def stream_audio_to_text(youtube_url, gui_text_widget, status_label, language_co
             status_label.config(text="Status: Error - Translation stopped after max retries.")
             stop_translation()
 
+    def update_status_translating():
+        status_label.config(text="Status: Translating...")
+
     start_ffmpeg_process()
 
     recognizer = KaldiRecognizer(model, 16000)
@@ -158,6 +161,7 @@ def stream_audio_to_text(youtube_url, gui_text_widget, status_label, language_co
 
         data = ffmpeg_process.stdout.read(4096)
         if recognizer.AcceptWaveform(data):
+            update_status_translating()  # Update status to show translation is ongoing
             result = recognizer.Result()
         else:
             result = recognizer.PartialResult()  # Handle partial results
